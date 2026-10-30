@@ -2,13 +2,12 @@
 
 import { motion } from "framer-motion";
 import {
-  
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
   Globe,
-  Radio,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -113,13 +112,20 @@ export function Sidebar() {
             collapsed ? "justify-center" : "gap-2.5",
           )}
         >
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-linear-to-tr from-primary to-indigo-400 text-white shadow-md shadow-primary/30">
-            <Radio className="size-5 animate-pulse" />
+          <div className="relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-lg rounded-tl-none rounded-br-none p-1 shadow-sm">
+            <Image
+              src="/assets/logo/logo.png"
+              alt="Sky Crawler Logo"
+              width={36}
+              height={36}
+              className="size-full object-contain"
+              priority
+            />
           </div>
           {!collapsed ? (
             <div className="flex flex-col">
               <span className="text-sm font-bold tracking-wider text-white">
-                SKY CRAWLER
+                CRAWLER
               </span>
               <span className="text-[10px] font-semibold tracking-widest text-sidebar-primary uppercase">
                 SP ADMIN PORTAL

@@ -29,7 +29,7 @@ export function TopBar() {
       variants={slideFromTop}
       initial="hidden"
       animate="visible"
-      className="sticky top-0 z-20 flex h-14 shrink-0 items-center justify-between gap-3 border-b bg-background/80 px-4 backdrop-blur-md"
+      className="sticky top-0 z-20 flex h-16 shrink-0 items-center justify-between gap-3 border-b bg-background/80 px-4 backdrop-blur-md"
     >
       <div className="hidden min-w-0 flex-1 sm:block sm:max-w-md">
         <Input

@@ -126,7 +126,20 @@ export default function PackagesPage() {
               </div>
             </CardContent>
 
-            <CardFooter className="flex items-center justify-end gap-2 border-t pt-4">
+            <CardFooter className="flex items-center justify-between gap-2 border-t pt-4">
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => {
+                  setSelectedPackage(pkg);
+                  setDeleteModalOpen(true);
+                }}
+                className="text-destructive hover:bg-destructive/10 text-xs"
+              >
+                <Trash2 className="size-3.5 mr-1" />
+                <span>Delete</span>
+              </Button>
+              
               <Button
                 variant="outline"
                 size="sm"
@@ -138,19 +151,6 @@ export default function PackagesPage() {
               >
                 <Edit className="size-3.5" />
                 <span>Configure</span>
-              </Button>
-
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setSelectedPackage(pkg);
-                  setDeleteModalOpen(true);
-                }}
-                className="text-destructive hover:bg-destructive/10 text-xs"
-              >
-                <Trash2 className="size-3.5 mr-1" />
-                <span>Delete</span>
               </Button>
             </CardFooter>
           </Card>
