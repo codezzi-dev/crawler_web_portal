@@ -1,0 +1,63 @@
+name: Crawler Web Portal Production Deployment
+
+on:
+  push:
+    branches: [ Main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.16.0' # Matches your environment
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm i
+
+      - name: Build Next.js Production Bundle
+        run: npm run build
+
+      - name: Configure SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'unnecessary' 
+          if_key_exists: replace
+
+      - name: Rsync Application Files to Server
+        run: |
+          rsync -e "ssh -o StrictHostKeyChecking=no" -az --delete \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude 'node_modules/' \
+            ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/var/www/sky_crawler/crawler_web_portal/
+
+      - name: Post-Deploy Server Execution via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # 1. Force load environmental variables for NVM, Node, and PM2
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
+            # Fallback to source profiles to catch global installations
+            source ~/.bashrc || source ~/.profile || true
+            
+            # 2. Navigate to your app directory
+            cd /var/www/sky_crawler/crawler_web_portal
+            
+            # 3. Fast installation of production-only dependencies on the host
+            npm install --production --frozen-lockfile
+            
+            # 4. Gracefully reload the PM2 cluster with zero downtime
+            pm2 reload Crawler_Web_Portal --env production || pm2 start Crawler_Web_Portal --env production
