@@ -65,4 +65,6 @@ jobs:
             npm install --production --frozen-lockfile
             
             # 4. Gracefully reload the PM2 cluster with zero downtime
-            pm2 reload Crawler_Web_Portal --env production || pm2 start ecosystem.config.js --env production
+            pm2 restart Crawler_Web_Portal || pm2 start npm --name Crawler_Web_Portal -- start
+
+            pm2 save
