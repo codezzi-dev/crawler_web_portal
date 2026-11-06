@@ -61,11 +61,26 @@ const FALLBACK_CRAWL_AUDITS: CrawlAuditEvent[] = [
 
 export const crawlAuditsApi = {
   async list(params?: QueryCrawlAuditsParams): Promise<CrawlAuditsResponse> {
+    const searchParams = new URLSearchParams();
+    if (params?.page) searchParams.set("page", String(params.page));
+    if (params?.limit) searchParams.set("limit", String(params.limit));
+    if (params?.status) searchParams.set("status", params.status);
+    if (params?.search) searchParams.set("search", params.search);
+
+    const query = searchParams.toString() ? `?${searchParams.toString()}` : "";
+
     try {
-      const direct = await http<CrawlAuditsResponse>("/crawl-audits");
-      if (direct && Array.isArray(direct.data)) return direct;
+      const res = await http<CrawlAuditsResponse>(`/licenses/crawl-audits${query}`);
+      if (res && Array.isArray(res.data) && res.data.length > 0) {
+        res.data = res.data.map((item: any) => ({
+          ...item,
+          licenseKey: item.license?.licenseKey || item.licenseKey || "—",
+          deviceFingerprint: item.device?.deviceFingerprint || item.deviceFingerprint || "—",
+        }));
+        return res;
+      }
     } catch {
-      // Direct endpoint not wired in backend, fallback to aggregating from licenses
+      // Backend direct endpoint error or empty
     }
 
     try {

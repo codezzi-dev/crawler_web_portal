@@ -8,7 +8,7 @@ function resolveAuthMode(): AuthMode {
 
 export const env = {
   get apiUrl() {
-    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api/v1";
+    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
   },
   get systemKey() {
     return process.env.NEXT_PUBLIC_SYSTEM_KEY || "sky-crawler-system-secret-key-2026";

@@ -8,11 +8,13 @@ import {
   CreditCard,
   ShieldAlert,
   Settings,
+  Search,
   type LucideIcon,
 } from "lucide-react";
 
 export type NavIcon =
   | "layoutGrid"
+  | "search"
   | "key"
   | "laptop"
   | "activity"
@@ -24,6 +26,7 @@ export type NavIcon =
 
 export const icons: Record<NavIcon, LucideIcon> = {
   layoutGrid: LayoutGrid,
+  search: Search,
   key: Key,
   laptop: Laptop,
   activity: Activity,
@@ -63,14 +66,12 @@ export const navigation: NavItem[] = [
     subtitle: "Hardware fingerprints, MAC bindings, and node sessions",
     href: "/devices",
     icon: "laptop",
-    disabled: true,
   },
   {
     title: "Crawl Audits",
-    subtitle: "Live execution feed, target URLs, and quota consumption",
+    subtitle: "Live execution feed, client keywords, and extracted results",
     href: "/crawl-audits",
     icon: "activity",
-    disabled: true,
   },
   {
     title: "User Management",
@@ -95,7 +96,6 @@ export const navigation: NavItem[] = [
     subtitle: "Immutable record of administrative actions and overrides",
     href: "/audit-logs",
     icon: "shieldAlert",
-    disabled: true,
   },
   {
     title: "Platform Settings",

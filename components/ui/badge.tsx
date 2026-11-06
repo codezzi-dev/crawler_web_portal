@@ -26,19 +26,18 @@ const badgeVariants = cva(
 );
 
 const badgeMotionVariants: Variants = {
-  initial: { opacity: 0, scale: 0.85, y: 4 },
+  initial: { opacity: 0 },
   animate: {
     opacity: 1,
     scale: 1,
     y: 0,
     transition: {
-      type: "spring",
-      stiffness: 450,
-      damping: 22,
+      duration: 0.15,
+      ease: "easeOut",
     },
   },
   hover: {
-    scale: 1.00,
+    scale: 1.02,
     y: -1,
     transition: { type: "spring", stiffness: 400, damping: 15 },
   },
@@ -54,21 +53,23 @@ export interface BadgeProps
 function Badge({
   className,
   variant = "default",
-  shimmer = true,
+  shimmer = false,
   children,
   ...props
 }: BadgeProps) {
+  const shouldShimmer = shimmer || variant === "shine";
+
   return (
     <motion.span
       className={cn(badgeVariants({ variant }), className)}
-      initial="initial"
+      initial={false}
       animate="animate"
       whileHover="hover"
       whileTap="tap"
       variants={badgeMotionVariants}
       {...(props as HTMLMotionProps<"span">)}
     >
-      {shimmer && (
+      {shouldShimmer && (
         <motion.span
           aria-hidden="true"
           className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/30 dark:via-white/15 to-transparent pointer-events-none"

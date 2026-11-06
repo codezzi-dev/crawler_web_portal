@@ -50,11 +50,25 @@ const FALLBACK_AUDIT_LOGS: SystemAuditLogItem[] = [
 
 export const auditLogsApi = {
   async list(params?: QueryAuditLogsParams): Promise<SystemAuditLogsResponse> {
+    const searchParams = new URLSearchParams();
+    if (params?.page) searchParams.set("page", String(params.page));
+    if (params?.limit) searchParams.set("limit", String(params.limit));
+    if (params?.action) searchParams.set("action", params.action);
+    if (params?.search) searchParams.set("search", params.search);
+
+    const query = searchParams.toString() ? `?${searchParams.toString()}` : "";
+
     try {
-      const direct = await http<SystemAuditLogsResponse>("/audit-logs");
-      if (direct && Array.isArray(direct.data)) return direct;
+      const direct = await http<SystemAuditLogsResponse>(`/audit-logs${query}`);
+      if (direct && Array.isArray(direct.data)) {
+        direct.data = direct.data.map((item: any) => ({
+          ...item,
+          adminEmail: item.adminUser?.email || item.adminEmail || "admin@skycrawler.io",
+        }));
+        return direct;
+      }
     } catch {
-      // Backend direct endpoint not yet active
+      // Fallback for offline mode
     }
 
     const filtered = FALLBACK_AUDIT_LOGS.filter((log) => {

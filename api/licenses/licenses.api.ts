@@ -26,10 +26,38 @@ export const licensesApi = {
   },
 
   async generate(payload: GenerateLicensePayload): Promise<GenerateLicenseResponse> {
-    return http<GenerateLicenseResponse>("/licenses/generate", {
+    const backendPayload: Record<string, unknown> = {
+      user_id: payload.userId,
+      package_id: payload.packageId,
+    };
+    if (payload.subscriptionId) backendPayload.subscription_id = payload.subscriptionId;
+    if (payload.deviceLimit !== undefined) backendPayload.device_limit = payload.deviceLimit;
+    if (payload.expiresAt) backendPayload.expires_at = payload.expiresAt;
+
+    const res = await http<any>("/licenses/generate", {
       method: "POST",
-      body: JSON.stringify(payload),
+      body: JSON.stringify(backendPayload),
     });
+
+    if (res?.data) {
+      if (res.data.license_key && !res.data.licenseKey) {
+        res.data.licenseKey = res.data.license_key;
+      }
+      if (res.data.user_id && !res.data.userId) {
+        res.data.userId = res.data.user_id;
+      }
+      if (res.data.package_id && !res.data.packageId) {
+        res.data.packageId = res.data.package_id;
+      }
+      if (res.data.device_limit !== undefined && res.data.deviceLimit === undefined) {
+        res.data.deviceLimit = res.data.device_limit;
+      }
+      if (res.data.expires_at && !res.data.expiresAt) {
+        res.data.expiresAt = res.data.expires_at;
+      }
+    }
+
+    return res as GenerateLicenseResponse;
   },
 
   async updateStatus(

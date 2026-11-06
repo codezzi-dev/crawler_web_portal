@@ -35,11 +35,21 @@ export function CreateUserModal({
       return;
     }
 
+    if (password && password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+
+    const effectivePassword =
+      password && password.trim().length >= 6
+        ? password.trim()
+        : `Temp@${Math.random().toString(36).slice(2, 8)}9!`;
+
     createMutation.mutate(
       {
         name,
         email,
-        password: password || undefined,
+        password: effectivePassword,
         role,
         status,
       },
