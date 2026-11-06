@@ -22,6 +22,10 @@ jobs:
         run: npm i
 
       - name: Build Next.js Production Bundle
+        env:
+          NEXT_PUBLIC_API_URL: https://crawlerapi.codezzi.net/api/v1
+          NEXT_PUBLIC_SYSTEM_KEY: sky_crawler_super_secret_system_key_2026_x77a9
+          NEXT_PUBLIC_AUTH_MODE: api
         run: npm run build
 
       - name: Configure SSH Key
